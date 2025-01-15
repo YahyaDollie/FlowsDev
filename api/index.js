@@ -41,17 +41,20 @@ MIIE...
 
 app.post("/", async (req, res) => {
   if (!PRIVATE_KEY) {
-    return res.status(424).send()
     throw new Error(
       'Private key is empty. Please check your env variable "PRIVATE_KEY".'
     );
   }
+
+  console.log("Private key fine.");
 
   if (!isRequestSignatureValid(req)) {
     // Return status code 432 if request signature does not match.
     // To learn more about return error codes visit: https://developers.facebook.com/docs/whatsapp/flows/reference/error-codes#endpoint_error_codes
     return res.status(432).send();
   }
+
+  console.log("Signature is valid.");
 
   let decryptedRequest = null;
   try {
