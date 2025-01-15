@@ -6,7 +6,11 @@
  */
 
 import express from "express";
-import { decryptRequest, encryptResponse, FlowEndpointException } from "./encryption.js";
+import {
+  decryptRequest,
+  encryptResponse,
+  FlowEndpointException,
+} from "./encryption.js";
 import { getNextScreen } from "./flow.js";
 import crypto from "crypto";
 import dotenv from "dotenv";
@@ -21,10 +25,10 @@ app.use(
     verify: (req, res, buf, encoding) => {
       req.rawBody = buf?.toString(encoding || "utf8");
     },
-  }),
+  })
 );
 
-const { APP_SECRET, PRIVATE_KEY, PASSPHRASE, PORT = "3000" } = process.env;
+const { APP_SECRET, PRIVATE_KEY, PASSPHRASE, PORT } = process.env;
 
 /*
 Example:
@@ -42,7 +46,7 @@ app.post("/", async (req, res) => {
     );
   }
 
-  if(!isRequestSignatureValid(req)) {
+  if (!isRequestSignatureValid(req)) {
     // Return status code 432 if request signature does not match.
     // To learn more about return error codes visit: https://developers.facebook.com/docs/whatsapp/flows/reference/error-codes#endpoint_error_codes
     return res.status(432).send();
@@ -95,19 +99,29 @@ app.listen(PORT, () => {
 });
 
 function isRequestSignatureValid(req) {
-  if(!APP_SECRET) {
-    console.warn("App Secret is not set up. Please Add your app secret in /.env file to check for request validation");
+  if (!APP_SECRET) {
+    console.warn(
+      "App Secret is not set up. Please Add your app secret in /.env file to check for request validation"
+    );
     return true;
   }
 
   const signatureHeader = req.get("x-hub-signature-256");
-  const signatureBuffer = Buffer.from(signatureHeader.replace("sha256=", ""), "utf-8");
+  if (!signatureHeader) {
+    console.error("Error: Signature header is missing.");
+    return false;
+  }
+
+  const signatureBuffer = Buffer.from(
+    signatureHeader.replace("sha256=", ""),
+    "utf-8"
+  );
 
   const hmac = crypto.createHmac("sha256", APP_SECRET);
-  const digestString = hmac.update(req.rawBody).digest('hex');
+  const digestString = hmac.update(req.rawBody).digest("hex");
   const digestBuffer = Buffer.from(digestString, "utf-8");
 
-  if ( !crypto.timingSafeEqual(digestBuffer, signatureBuffer)) {
+  if (!crypto.timingSafeEqual(digestBuffer, signatureBuffer)) {
     console.error("Error: Request Signature did not match");
     return false;
   }
