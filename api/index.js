@@ -6,8 +6,8 @@
  */
 
 import express from "express";
-import { decryptRequest, encryptResponse, FlowEndpointException } from "../src/encryption.js";
-import { getNextScreen } from "../src/flow.js";
+import { decryptRequest, encryptResponse, FlowEndpointException } from "./encryption.js";
+import { getNextScreen } from "./flow.js";
 import crypto from "crypto";
 
 const app = express();
