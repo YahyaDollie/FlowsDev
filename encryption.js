@@ -78,6 +78,7 @@ export const encryptResponse = (
     aesKeyBuffer,
     Buffer.from(flipped_iv)
   );
+  console.log("👉 Encrypted Response:", JSON.stringify(response));
   return Buffer.concat([
     cipher.update(JSON.stringify(response), "utf-8"),
     cipher.final(),
