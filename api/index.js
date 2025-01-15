@@ -108,10 +108,6 @@ function isRequestSignatureValid(req) {
   }
 
   const signatureHeader = req.get("x-hub-signature-256");
-  if (!signatureHeader) {
-    console.error("Error: Signature header is missing.");
-    return false;
-  }
 
   const signatureBuffer = Buffer.from(
     signatureHeader.replace("sha256=", ""),
