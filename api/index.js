@@ -10,8 +10,8 @@ import {
   decryptRequest,
   encryptResponse,
   FlowEndpointException,
-} from "./encryption.js";
-import { getNextScreen } from "./flow.js";
+} from "../encryption.js";
+import { getNextScreen } from "../flow.js";
 import crypto from "crypto";
 import dotenv from "dotenv";
 
@@ -41,6 +41,7 @@ MIIE...
 
 app.post("/", async (req, res) => {
   if (!PRIVATE_KEY) {
+    return res.status(424).send()
     throw new Error(
       'Private key is empty. Please check your env variable "PRIVATE_KEY".'
     );
